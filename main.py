@@ -31,6 +31,7 @@ from actions.dev_agent         import dev_agent
 from actions.web_search        import web_search as web_search_action
 from actions.computer_control  import computer_control
 from actions.game_updater      import game_updater
+from actions.google_calendar   import google_calendar
 
 
 def get_base_dir():
@@ -449,6 +450,29 @@ TOOL_DECLARATIONS = [
     }
 },
     {
+        "name": "google_calendar",
+        "description": (
+            "Manages the user's Google Calendar. "
+            "Use 'list_events' to show upcoming appointments, meetings, or events. "
+            "Use 'create_event' to book a new appointment or meeting. "
+            "Always call this tool for any calendar-related request — never simulate results."
+        ),
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "action":           {"type": "STRING",  "description": "list_events | create_event"},
+                "days":             {"type": "INTEGER", "description": "For list_events: how many days ahead to look (default: 7)"},
+                "max_results":      {"type": "INTEGER", "description": "For list_events: max number of events to return (default: 10)"},
+                "title":            {"type": "STRING",  "description": "For create_event: event title/name"},
+                "date":             {"type": "STRING",  "description": "For create_event: date in YYYY-MM-DD format"},
+                "time":             {"type": "STRING",  "description": "For create_event: start time in HH:MM format (24h). Omit for all-day event."},
+                "duration_minutes": {"type": "INTEGER", "description": "For create_event: duration in minutes (default: 60)"},
+                "description":      {"type": "STRING",  "description": "For create_event: optional event notes or description"},
+            },
+            "required": ["action"]
+        }
+    },
+    {
         "name": "save_memory",
         "description": (
             "Save an important personal fact about the user to long-term memory. "
@@ -672,6 +696,10 @@ class JarvisLive:
 
             elif name == "flight_finder":
                 r = await loop.run_in_executor(None, lambda: flight_finder(parameters=args, player=self.ui))
+                result = r or "Done."
+
+            elif name == "google_calendar":
+                r = await loop.run_in_executor(None, lambda: google_calendar(parameters=args, player=self.ui))
                 result = r or "Done."
 
             elif name == "shutdown_jarvis":
