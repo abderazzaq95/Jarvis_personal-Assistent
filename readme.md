@@ -38,8 +38,11 @@ It's not just an assistant — it's an extension of your digital life.
 ## ⚡ Quick Start
 
 ```bash
-git clone https://github.com/FatihMakes/Mark-XXXIX.git
-cd Mark-XXXIX
+git clone https://github.com/abderazzaq95/Jarvis_personal-Assistent.git
+cd Jarvis_personal-Assistent
+python -m venv venv
+source venv/bin/activate        # Mac/Linux
+venv\Scripts\activate           # Windows
 pip install -r requirements.txt
 playwright install
 python main.py
